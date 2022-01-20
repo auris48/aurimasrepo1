@@ -1,0 +1,208 @@
+package tictactoe;
+
+
+import java.util.Scanner;
+
+public class Main {
+    static Scanner scanner = new Scanner(System.in);
+    static int xCoord = 0;
+    static int yCoord = 0;
+    static char[][] gameArray = new char[3][3];
+
+    public static void main(String[] args) {
+        boolean ongoing = true;
+        String cells = "_________";
+        gameArray = fillArray(gameArray, cells);
+        int turn = 0;
+
+        while (ongoing) {
+            ongoing = checkWin(gameArray);
+            if (!ongoing) {
+                break;
+            }
+
+            placeMove();
+
+            if (turn == 0) {
+                gameArray[xCoord][yCoord] = 'X';
+                turn = 1;
+            } else {
+                gameArray[xCoord][yCoord] = 'O';
+                turn = 0;
+            }
+            outputGrid(gameArray);
+        }
+
+    }
+
+    public static void placeMove() {
+
+        System.out.print("Enter the coordinates: ");
+
+        boolean correctInput = false;
+        while (!correctInput) {
+            String coordinates = scanner.nextLine();
+            String trimmedCoords = coordinates.replaceAll(" ", "");
+            int[] coords = new int[trimmedCoords.length()];
+
+            if (!checkInput(trimmedCoords)) {
+                System.out.println("You should enter numbers");
+                continue;
+            } else {
+                coords = getIntsFromString(coordinates);
+            }
+
+            if (!checkNumbers(coords)) {
+                continue;
+            }
+
+            if (gameArray[coords[0] - 1][coords[1] - 1] != '_') {
+                System.out.println("This cell is occupied! Choose another one!");
+                continue;
+            }
+            xCoord = coords[0] - 1;
+            yCoord = coords[1] - 1;
+            correctInput = true;
+
+        }
+
+    }
+
+    public static boolean checkNumbers(int[] a) {
+
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] < 1 || a[i] > 3) {
+                System.out.println("Coordinates should be from 1 to 3!");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    public static int[] getIntsFromString(String s) {
+        int a[] = new int[s.length() - 1];
+        int element = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == ' ') {
+                element++;
+            }
+            a[element] = s.charAt(i) - 48;
+        }
+
+        return a;
+    }
+
+    public static boolean checkInput(String s) {
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c < 48 || c > 57) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static void outputGrid(char[][] a) {
+
+        System.out.println("---------");
+        for (int i = 0; i < a.length; i++) {
+            System.out.print("| ");
+            for (int j = 0; j < a[i].length; j++) {
+                System.out.print(a[i][j] + " ");
+            }
+            System.out.println("|");
+        }
+        System.out.println("---------");
+
+    }
+
+    public static char[][] fillArray(char[][] a, String b) {
+
+        int charAt = 0;
+        System.out.println("---------");
+        for (int i = 0; i < a.length; i++) {
+            System.out.print("| ");
+            for (int j = 0; j < a[i].length; j++) {
+                a[i][j] = b.charAt(charAt);
+                System.out.print(a[i][j] + " ");
+                charAt++;
+            }
+            System.out.println("|");
+        }
+        System.out.println("---------");
+        return a;
+    }
+
+    public static boolean checkWin(char[][] a) {
+        String diagonal = "";
+        String diagonal2 = "";
+        String column1 = "";
+        String column2 = "";
+        String column3 = "";
+        boolean emptyCells = false;
+        boolean xWin = false;
+        boolean oWin = false;
+
+        for (int i = 0; i < a.length; i++) {
+            String line = "";
+
+            for (int j = 0; j < a[i].length; j++) {
+                line += a[i][j];
+                if (i == j) {
+                    diagonal += a[i][j];
+                }
+                if (i + j == a.length - 1) {
+                    diagonal2 += a[i][j];
+                }
+                if (a[i][j] == '_') {
+                    emptyCells = true;
+                }
+            }
+
+            if (line.contains("XXX")) {
+                xWin = true;
+            } else if (line.contains("OOO")) {
+                oWin = true;
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            column1 += a[i][0];
+            column2 += a[i][1];
+            column3 += a[i][2];
+        }
+        if (diagonal.contains("XXX") ||
+                column1.contains("XXX") ||
+                column2.contains("XXX") ||
+                column3.contains("XXX") ||
+                diagonal2.contains("XXX")) {
+            xWin = true;
+        }
+        if (diagonal.contains("OOO") ||
+                column1.contains("OOO") ||
+                column2.contains("OOO") ||
+                column3.contains("OOO") ||
+                diagonal2.contains("OOO")) {
+            oWin = true;
+        }
+
+        if (xWin && !oWin) {
+            System.out.println("X wins");
+        } else if (!xWin && oWin) {
+            System.out.println("O wins");
+        } else if (!xWin && !oWin && emptyCells) {
+            System.out.println("Game not finished");
+            return true;
+        } else if (!xWin && !oWin && !emptyCells) {
+            System.out.println("Draw");
+        } else {
+            System.out.println("Impossible");
+        }
+
+        return false;
+    }
+}
