@@ -1,0 +1,219 @@
+package machine;
+
+import java.sql.SQLOutput;
+import java.util.Arrays;
+import java.util.Scanner;
+
+enum State {
+    DISPLAYING_MENU, CHOOSING_ACTION,
+    CHOOSING_COFFEE, FILLING_START, FILLING_WATER, FILLING_MILK, FILLING_BEANS, FILLING_CUPS, DISPLAYING_COFFEE_MENU,
+    TAKING, END
+}
+
+public class CoffeeMachine {
+    static int waterContained = 400;
+    static int milkContained = 540;
+    static int beansContained = 120;
+    static int cupsContained = 9;
+    static int machineMoney = 550;
+    State currentState = State.DISPLAYING_MENU;
+    String input;
+
+    public CoffeeMachine() {
+
+        printOnStateTransition();
+        currentState = State.CHOOSING_ACTION;
+    }
+
+    public void printOnStateTransition() {
+
+        if (currentState.equals(State.DISPLAYING_MENU)) {
+            System.out.println("\nWrite action (buy, fill, take, remaining, exit):");
+        }
+
+        if (currentState.equals(State.DISPLAYING_COFFEE_MENU)) {
+            System.out.println("What do you want to buy? 1 - espresso, 2 -" +
+                    " latte, 3 - cappuccino, back - to main menu:");
+            currentState.equals(State.CHOOSING_COFFEE);
+        }
+
+        if (currentState.equals(State.FILLING_START)) {
+            System.out.println("Write how many ml of water you want to add");
+            currentState = State.FILLING_WATER;
+        }
+
+    }
+
+    public void onChoosingAction() {
+
+
+        if (input.equalsIgnoreCase("remaining")) {
+            printAvailableIngredients();
+        } else if (input.equalsIgnoreCase("buy")) {
+            currentState = State.DISPLAYING_COFFEE_MENU;
+            printOnStateTransition();
+
+        } else if (input.equalsIgnoreCase("fill")) {
+            currentState = State.FILLING_START;
+            printOnStateTransition();
+            ;
+        } else if (input.equalsIgnoreCase("exit")) {
+            currentState = State.END;
+
+
+        } else if (input.equalsIgnoreCase("take")) {
+            System.out.printf("I gave you: $%d%n", machineMoney);
+            machineMoney=0;
+        }
+    }
+
+
+    public Boolean insertInput(String input) {
+
+        this.input = input;
+
+        switch (currentState) {
+            case DISPLAYING_MENU:
+                currentState = State.CHOOSING_ACTION;
+                //fallthrough
+            case CHOOSING_ACTION:
+                onChoosingAction();
+                break;
+            case DISPLAYING_COFFEE_MENU:
+                currentState = currentState.CHOOSING_COFFEE;
+            case CHOOSING_COFFEE:
+                String coffee = buyCoffee(input);
+                System.out.println(coffee);
+                currentState = State.DISPLAYING_MENU;
+                printOnStateTransition();
+                break;
+            case FILLING_WATER:
+                waterContained += Integer.parseInt(input);
+                System.out.println("Write how many ml of milk you want to add");
+                currentState = State.FILLING_MILK;
+                break;
+            case FILLING_MILK:
+                milkContained += Integer.parseInt(input);
+                System.out.println("Write how many grams of beans you want to add");
+                currentState = State.FILLING_BEANS;
+                break;
+
+            case FILLING_BEANS:
+                beansContained += Integer.parseInt(input);
+                System.out.println("Write how many cups you want to add");
+                currentState = State.FILLING_CUPS;
+                break;
+
+            case FILLING_CUPS:
+                cupsContained += Integer.parseInt(input);
+                currentState = State.DISPLAYING_MENU;
+                printOnStateTransition();
+                break;
+
+            case END:
+                return false;
+
+            default:
+                System.out.println("Default called on insertInput");
+        }
+
+        return true;
+    }
+
+    public String buyCoffee(String s) {
+
+        String coffeeSelection = s;
+
+        if (coffeeSelection.equalsIgnoreCase("back")) {
+            return "back";
+        }
+
+        switch (coffeeSelection) {
+            case "1":
+                if (waterContained < 250)
+                    return "Sorry, not enough water!";
+                else if (beansContained < 16) {
+                    return "Sorry, not enough beans!";
+                } else if (cupsContained < 1) {
+                    return "Sorry, not enough cups!";
+                } else {
+                    waterContained -= 250;
+                    beansContained -= 16;
+                    machineMoney += 4;
+                    cupsContained -= 1;
+                }
+                break;
+            case "2":
+                if (waterContained < 350) {
+                    return "Sorry, not enough water!";
+                } else if (milkContained < 75) {
+                    return "Sorry, not enough cups!";
+                } else if (cupsContained < 1) {
+                    return "Sorry, not enough cups!";
+                } else if (beansContained < 20) {
+                    return "Sorry, not enough beans!";
+                } else {
+                    waterContained -= 350;
+                    milkContained -= 75;
+                    beansContained -= 20;
+                    machineMoney += 7;
+                    cupsContained -= 1;
+                }
+                break;
+            case "3":
+                if (waterContained < 200) {
+                    return "Sorry, not enough water!";
+                } else if (milkContained < 100) {
+                    return "Sorry, not enough cups!";
+                } else if (cupsContained < 1) {
+                    return "Sorry, not enough cups!";
+                } else if (beansContained < 12) {
+                    return "Sorry, not enough beans!";
+                } else {
+                    waterContained -= 200;
+                    milkContained -= 100;
+                    beansContained -= 12;
+                    machineMoney += 6;
+                    cupsContained -= 1;
+                }
+                break;
+            default:
+                System.out.println("default");
+        }
+
+        currentState = State.CHOOSING_ACTION;
+        return "I have enough resources, making you a coffee!";
+    }
+
+    public void printAvailableIngredients() {
+        //System.out.println("Called printAvailableIngredients");
+        System.out.printf("%nThe coffee machine has:%n" +
+                "%d ml of water%n" +
+                "%d ml of milk%n" +
+                "%d g of coffee beans%n" +
+                "%d disposable cups%n" +
+                "$%d of money%n", waterContained, milkContained, beansContained, cupsContained, machineMoney);
+        currentState = State.DISPLAYING_MENU;
+        printOnStateTransition();
+
+    }
+}
+
+
+package machine;
+
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        CoffeeMachine user = new CoffeeMachine();
+
+        while (true) {
+            //System.out.println("At main");
+            if (user.currentState.equals(State.END)) break;
+            user.insertInput(scanner.nextLine());;
+        }
+    }
+}
