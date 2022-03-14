@@ -1,0 +1,608 @@
+package numbers;
+
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+
+    static long numL = 0L;
+    static int operations = 0;
+
+    static ArrayList<PropertiesClass> propsClass = new ArrayList<>();
+
+    public static void main(String[] args) {
+
+
+        printInstructions();
+
+        boolean running = true;
+
+        while (running) {
+            numL = 0L;
+            operations = 0;
+            propsClass.clear();
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("\nEnter a request:");
+            String input = scanner.nextLine();
+            int inputValue = checkInput(input);
+
+            if (inputValue == 0) {
+                continue;
+            } else if (inputValue == -1) {
+                break;
+            }
+            if (!processInput()) {
+                continue;
+            }
+
+        }
+
+        System.out.println("Goodbye!");
+    }
+
+    public static boolean processInput() {
+
+        if (operations > 0) {
+            if (propsClass.size() > 0) {
+                if (checkProperties(propsClass)) {
+                    if (!checkMutuallyExclusiveEnum(propsClass)) {
+                        ArrayList<Number> numbers = searchPropertiesClass(numL, operations, propsClass);
+                        printList(numbers);
+                    }
+                }
+
+            } else {
+                for (int i = 0; i < operations; i++) {
+                    System.out.println(numL + " is " + new Number(numL).getProperties().toString().replaceAll("[\\[\\]]", ""));
+                    numL++;
+                }
+            }
+
+        } else if (operations < 0) {
+            System.out.println("The second parameter should be a natural number");
+            return false;
+        } else {
+            new Number(numL).printNumberProperties();
+        }
+
+        return true;
+    }
+
+    public static ArrayList<Number> searchPropertiesClass(long numL, int operations, ArrayList<PropertiesClass> properties) {
+        ArrayList<Number> numbersList = new ArrayList<>();
+
+        while (numbersList.size() < operations) {
+            Number numObj = new Number(numL);
+            boolean matchesAllProperties = true;
+
+            for (PropertiesClass property : properties) {
+                boolean matchesProperty = false;
+                switch (property.getCurrentProperty()) {
+                    case "SPY":
+                        if (!property.isNegative()) {
+                            if (numObj.isSpy()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isSpy()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "DUCK":
+                        if (!property.isNegative()) {
+                            if (numObj.isDuck()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isDuck()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "PALINDROMIC":
+                        if (!property.isNegative()) {
+                            if (numObj.isPalindromic()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isPalindromic()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "BUZZ":
+                        if (!property.isNegative()) {
+                            if (numObj.isBuzzNumber()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isBuzzNumber()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "GAPFUL":
+                        if (!property.isNegative()) {
+                            if (numObj.isGapful()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isGapful()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "EVEN":
+                        if (!property.isNegative()) {
+                            if (numObj.isEven()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isEven()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "ODD":
+                        if (!property.isNegative()) {
+                            if (numObj.isOdd()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isOdd()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "SUNNY":
+                        if (!property.isNegative()) {
+                            if (numObj.isSunny()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isSunny()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "SQUARE":
+                        if (!property.isNegative()) {
+                            if (numObj.isSquare()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isSquare()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "JUMPING":
+                        if (!property.isNegative()) {
+                            if (numObj.isJumping()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isJumping()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "HAPPY":
+                        if (!property.isNegative()) {
+                            if (numObj.isHappy()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isHappy()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    case "SAD":
+                        if (!property.isNegative()) {
+                            if (numObj.isSad()) {
+                                matchesProperty = true;
+                            }
+                        } else {
+                            if (!numObj.isSad()) {
+                                matchesProperty = true;
+                            }
+                        }
+                        break;
+                    default:
+                }
+
+                if (!matchesProperty) {
+                    matchesAllProperties = false;
+                    break;
+                }
+            }
+
+            if (matchesAllProperties) numbersList.add(numObj);
+            numL++;
+        }
+
+        return numbersList;
+    }
+
+    public static void printList(ArrayList<Number> numbers) {
+        for (Number number : numbers) {
+            System.out.println(number.getNum() + " is " + number.getProperties().toString().replaceAll("[\\[\\]]", ""));
+        }
+    }
+
+    public static void printInstructions() {
+        System.out.printf("Welcome to Amazing Numbers!\n" +
+                "\n" + "Supported requests:\n"
+                + "- enter a natural number to know its properties;\n"
+                + "- enter two natural numbers to obtain the properties of the list:\n"
+                + " * the first parameter represents a starting number;\n"
+                + " * the second parameter shows how many consecutive numbers are to be processed;\n"
+                + "- two natural numbers and a properties to search for;\n"
+                + "- a property preceded by minus must not be present in numbers;\n"
+                + "- separate the parameters with one space;\n"
+                + "- enter 0 to exit.\n");
+
+
+    }
+
+    public static boolean checkProperties(ArrayList<PropertiesClass> properties) {
+        ArrayList<String> wrongProperties = new ArrayList<>();
+
+        for (PropertiesClass propertyToCheck : properties) {
+            if (!propertyToCheck.checkProperty()) {
+                wrongProperties.add(propertyToCheck.getTrueProperty());
+            }
+        }
+
+        if (wrongProperties.size() == 1) {
+            System.out.printf("The property %s is wrong.\n" + "Available properties: [EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING, SAD, HAPPY]\n", wrongProperties);
+            return false;
+        } else if (wrongProperties.size() >= 2) {
+            System.out.printf("The properties %s are wrong.\n" + "Available properties: [EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING, SAD, HAPPY]\n", wrongProperties.toString().replaceAll("[,.!?;:]", "$0 ").replaceAll("\\s+", " "));
+
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static int checkInput(String input) {
+
+
+        if (input.isEmpty()) {
+            printInstructions();
+            return 0;
+        }
+
+        if (input.contains(" ")) {
+            String[] splitInput = input.split(" ");
+
+            numL = Long.parseLong(splitInput[0]);
+            operations = Integer.parseInt(splitInput[1]);
+
+            if (splitInput.length > 2) {
+                for (int i = 2; i < splitInput.length; i++) {
+                    propsClass.add(new PropertiesClass(splitInput[i].toUpperCase()));
+
+                }
+            }
+        } else {
+            numL = Long.parseLong(input);
+        }
+
+        if (numL == 0) {
+            return -1;
+        } else if (numL < 0) {
+            System.out.println("The first parameter should be a natural number or zero");
+            return 0;
+        }
+
+        return 1;
+    }
+
+    public static boolean checkMutuallyExclusiveEnum(ArrayList<PropertiesClass> properties) {
+        ArrayList<String> propNames = new ArrayList<>();
+
+        for (PropertiesClass property : properties) {
+            propNames.add(property.getTrueProperty());
+        }
+
+
+        if ((propNames.contains("SUNNY") && propNames.contains("SQUARE")) || ((propNames.contains("-SUNNY") && propNames.contains("-SQUARE")))) {
+            System.out.printf("The request contains mutually exclusive properties: [SUNNY, SQUARE]%n" + "There are no numbers with these properties.%n");
+            return true;
+        }
+
+        if ((propNames.contains("SAD") && propNames.contains("HAPPY")) || ((propNames.contains("-SAD") && propNames.contains("-HAPPY")))) {
+            System.out.printf("The request contains mutually exclusive properties: [SAD, HAPPY]%n" + "There are no numbers with these properties.%n");
+            return true;
+        }
+
+        if ((propNames.contains("DUCK") && propNames.contains("SPY")) || ((propNames.contains("-DUCK") && propNames.contains("-SPY")))) {
+            System.out.printf("The request contains mutually exclusive properties: [DUCK, SPY]%n" + "There are no numbers with these properties.%n");
+            return true;
+        }
+
+        if ((propNames.contains("ODD") && propNames.contains("EVEN")) || ((propNames.contains("-ODD") && propNames.contains("-EVEN")))) {
+            System.out.printf("The request contains mutually exclusive properties: [EVEN, ODD]%n" + "There are no numbers with these properties.%n");
+            return true;
+        }
+
+
+        for (PropertiesClass property : properties) {
+            for (PropertiesClass propertiesClass : properties) {
+                if (property.getCurrentProperty().equals(propertiesClass.getCurrentProperty()) && property.isNegative() != propertiesClass.isNegative()) {
+                    System.out.printf("The request contains mutually exclusive properties: [%s, %s]%n" + "There are no numbers with these properties.%n", property.isNegative() ? "-" + property.getCurrentProperty() : property.getCurrentProperty(), propertiesClass.isNegative() ? "-" + propertiesClass.getCurrentProperty() : propertiesClass.getCurrentProperty());
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
+    }
+}
+
+package numbers;
+
+import java.util.ArrayList;
+
+public class Number {
+    long num;
+    private final boolean isEven;
+    private final boolean isOdd;
+    private final boolean endsWithSeven;
+    private final boolean divisibleBySeven;
+    private final boolean buzzNumber;
+    private final boolean isDuck;
+    private final boolean isPalindromic;
+    private final boolean isGapful;
+    private final boolean isSpy;
+    private final boolean isSquare;
+    private final boolean isSunny;
+    private final boolean isJumping;
+    private final boolean isHappy;
+    private final boolean isSad;
+
+    public Number(long num) {
+        this.num = num;
+        isEven = num % 2 == 0;
+        isOdd = num % 2 != 0;
+        endsWithSeven = num % 10 == 7;
+        divisibleBySeven = num % 7 == 0;
+        buzzNumber = endsWithSeven || divisibleBySeven;
+        isDuck = Long.toString(num).substring(1).contains("0");
+        isPalindromic = checkPalindromic(Long.toString(num));
+        isGapful = checkGapful(num);
+        isSpy = checkSpy(num);
+        isSquare = checkIfSquare(num);
+        isSunny = checkIfSquare(num + 1);
+        isJumping = checkJumping(Long.toString(num));
+        isHappy = checkHappy(num);
+        isSad = !isHappy;
+    }
+
+    public ArrayList<String> getProperties() {
+        ArrayList<String> properties = new ArrayList<>();
+        if (isEven) properties.add("even");
+        if (isOdd) properties.add("odd");
+        if (buzzNumber) properties.add("buzz");
+        if (isDuck) properties.add("duck");
+        if (isPalindromic) properties.add("palindromic");
+        if (isGapful) properties.add("gapful");
+        if (isSpy) properties.add("spy");
+        if (isSquare) properties.add("square");
+        if (isSunny) properties.add("sunny");
+        if (isJumping) properties.add("jumping");
+        if (isHappy) properties.add("happy");
+        if (isSad) properties.add("sad");
+        return properties;
+    }
+
+    public boolean isEven() {
+        return isEven;
+    }
+
+    public boolean isOdd() {
+        return isOdd;
+    }
+
+    public boolean isBuzzNumber() {
+        return buzzNumber;
+    }
+
+    public boolean isDuck() {
+        return isDuck;
+    }
+
+    public boolean isPalindromic() {
+        return isPalindromic;
+    }
+
+    public boolean isGapful() {
+        return isGapful;
+    }
+
+    public boolean isSpy() {
+        return isSpy;
+    }
+
+    public boolean isSunny() {
+        return isSunny;
+    }
+
+    public boolean isSquare() {
+        return isSquare;
+    }
+
+    public boolean isHappy() {
+        return isHappy;
+    }
+
+    public boolean isSad() {
+        return isSad;
+    }
+
+    public void printNumberProperties() {
+
+        System.out.printf("%nProperties of %d %n", num);
+        System.out.println("\t   buzz: " + buzzNumber);
+        System.out.println("\t   duck: " + isDuck);
+        System.out.println("palindromic: " + isPalindromic);
+        System.out.println("\t gapful: " + isGapful);
+        System.out.println("\t   even: " + isEven);
+        System.out.println("\t    odd: " + isOdd);
+        System.out.println("\t    spy: " + isSpy);
+        System.out.println("\t square: " + isSquare);
+        System.out.println("\t  sunny: " + isSunny);
+        System.out.println("\tjumping: " + isJumping);
+        System.out.println("\t  happy: " + isHappy);
+        System.out.println("\t    sad: " + isSad);
+    }
+
+    public long getNum() {
+        return num;
+    }
+
+    public static boolean checkGapful(long a) {
+        String s = String.valueOf(a);
+        if (String.valueOf(a).length() < 3) {
+            return false;
+        }
+        String firstLast = String.valueOf(s.charAt(0)).concat(String.valueOf(s.charAt(s.length() - 1)));
+        int concatFirstLastInt = Integer.parseInt(firstLast);
+        return a % concatFirstLastInt == 0;
+
+    }
+
+    public static boolean checkSpy(long a) {
+        String s = String.valueOf(a);
+        ArrayList<Integer> numbers = new ArrayList<>();
+        int sum = 0;
+        int timesSum = 1;
+
+        for (int i = 0; i < s.length(); i++) {
+            numbers.add(Integer.parseInt(String.valueOf(s.charAt(i))));
+        }
+
+        for (Integer number : numbers) {
+            sum += number;
+            timesSum *= number;
+
+        }
+
+
+        return timesSum == sum;
+    }
+
+    public static Boolean checkPalindromic(String s) {
+        boolean isPalindromic = true;
+        int charcheck = 0;
+
+        for (int i = s.length() - 1; i >= 0; i--) {
+
+            if (s.charAt(i) != s.charAt(charcheck)) {
+                isPalindromic = false;
+            }
+            charcheck++;
+        }
+
+        return isPalindromic;
+    }
+
+    public boolean isJumping() {
+        return isJumping;
+    }
+
+    public static boolean checkJumping(String s) {
+        boolean isJumping = true;
+        char[] sCharArray = s.toCharArray();
+
+        for (int i = 1; i < sCharArray.length; i++) {
+            if (Math.abs(Integer.parseInt(String.valueOf(sCharArray[i]))
+                    - Integer.parseInt(String.valueOf(sCharArray[i - 1]))) != 1) {
+                return false;
+            }
+        }
+
+
+        return isJumping;
+    }
+
+
+    public boolean checkHappy(long a) {
+
+        double result = 0;
+
+        do {
+            result = 0;
+            String s = String.valueOf(a);
+            char[] sCharArray = s.toCharArray();
+            for (int i = 0; i < sCharArray.length; i++) {
+                result += Math.pow(Integer.parseInt(String.valueOf(sCharArray[i])), 2);
+
+            }
+            a = (long) result;
+        } while (a != 1 && a != 4 && a != num);
+
+
+        return a == 1;
+    }
+
+    public static Boolean checkIfSquare(long num) {
+        return Math.pow((int) Math.sqrt((double) num), 2) == num;
+    }
+}
+
+package numbers;
+
+public class PropertiesClass {
+
+    private final static String[] properties = new String[]
+            {"BUZZ", "DUCK", "PALINDROMIC", "GAPFUL", "SPY", "EVEN", "ODD", "SQUARE", "SUNNY", "JUMPING", "HAPPY", "SAD",};
+    private final String currentProperty;
+    private String signedProperty="";
+    private boolean isNegative;
+
+    public PropertiesClass(String property) {
+
+        if (property.startsWith("-")) {
+            this.signedProperty=property;
+            this.currentProperty = property.replace("-", "");
+            isNegative = true;
+
+        } else{
+            this.currentProperty = property;
+        }
+
+    }
+
+    public String getTrueProperty() {
+        return !signedProperty.equals("") ? signedProperty : currentProperty;
+    }
+
+    public boolean checkProperty() {
+        boolean isValid=false;
+        for (String validProperty : properties) {
+            if (currentProperty.equals(validProperty)) {
+                isValid=true;
+                break;
+            }
+        }
+        return isValid;
+    }
+
+    public String getCurrentProperty() {
+        return currentProperty;
+    }
+
+    public boolean isNegative() {
+        return isNegative;
+    }
+}
+
+
